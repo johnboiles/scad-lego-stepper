@@ -183,41 +183,51 @@ module stepperholes() {
 	translate([35/2,  -8, 1]) cylinder(r=4, h=4);
 	translate([-35/2, -8, -10]) cylinder(r=2, h=20);
 	translate([-35/2,  -8, 1]) cylinder(r=4, h=4);
+    
+    
 }
 
 
 module stepper_frame() {
-    translate([8,42,0]) cube([2,2,9.9]);
-    translate([8,42+3.8,0]) cube([2,2,9.9]);
-    translate([9,43.6,2.5]) sphere(r=1);
-    translate([9,46.4,2.5]) sphere(r=1);
-
-    translate([38,42,0]) cube([2,2,9.9]);
-    translate([38,42+3.8,0]) cube([2,2,9.9]);
-    translate([39,43.6,2.5]) sphere(r=1);
-    translate([39,46.4,2.5]) sphere(r=1);
-
     difference() {
         union() {
+            // When looking from the front of the stepper shaft
+            // Front left
             translate([0,0,0]) corner(3,4,1);
-            translate([8*6,8*8,0]) rotate([0,0,180]) corner(3,4,1);
+            // Back right
+            translate([8*6,8*6,0]) rotate([0,0,180]) corner(3,2,1);
+            // Front right
             translate([8*6,0,0]) rotate([0,0,90]) corner(4,3,1);
-            translate([0,8*8,0]) rotate([0,0,-90]) corner(4,3,1);
+            // Back left
+            translate([0,8*6,0]) rotate([0,0,-90]) corner(2,3,1);
 
+            // Extra brick on top of the shaft hole
             translate([16,0,9.9]) flat_pos(2,1);
+
+            // Stepper mount front plate
+            translate([0,18,2.2]) cube([48,2,20]);
+            translate([8,18,0]) cube([13,2,2.2]);
+            translate([8+19,18,0]) cube([13,2,2.2]);
             
-            translate([0,19,0]) cube([48,2,20]);
-            translate([0,19,0]) cube([2,13,20]);
-            translate([48-2,19,0]) cube([2,13,20]);
+            // Left stepper support
+            translate([2,20,9]) rotate([0,270,0]) linear_extrude(2) polygon([[0,0],[0,12],[13,0]],[[0,1,2]], 4);
+            // Right stepper support
+            translate([48,20,9]) rotate([0,270,0]) linear_extrude(2) polygon([[0,0],[0,12],[13,0]],[[0,1,2]], 4);
             
         }
+        // Front holes
         translate([8,0,0]) side_holes(4);
-        translate([8,8*7,0]) side_holes(4);
-        rotate([0,0,90]) translate([0,-8,0]) side_holes(8);
-        rotate([0,0,90]) translate([0,-8*6,0]) side_holes(8);
-        
-        translate([24,20,5.7]) rotate([90,180,0]) stepperholes();    
-        translate([2,21,9.9]) cube([44,4,20]);
+        // Rear three holes
+        translate([8,8*5,0]) side_holes(4);
+        // Left side holes
+        rotate([0,0,90]) translate([0,-8,0]) side_holes(6);
+        // Right side holes
+        rotate([0,0,90]) translate([0,-8*6,0]) side_holes(6);
+
+        // Cut out the stepper holes
+        translate([24,20,5.7]) rotate([90,180,0]) stepperholes();
+        // Make space for screw holes behind stepper
+        translate([2,20,9.9]) cube([44,4,20]);
      }
  }
  
