@@ -1,5 +1,7 @@
 $fn=50;
 
+use <hexagon.scad>
+
 module pos(rows,cols) {
 	for (r=[0:rows-1]) {
 		for (c=[0:cols-1]) {
@@ -177,16 +179,17 @@ module stepper() {
 }
 
 module stepperholes() {
-	translate([0,0,-2])cylinder(r=5.2, h=4);
-	translate([0,0,-10])cylinder(r=5, h=40);
-	translate([35/2,  -8, -10]) cylinder(r=2, h=20);
-	translate([35/2,  -8, 1]) cylinder(r=4, h=4);
-	translate([-35/2, -8, -10]) cylinder(r=2, h=20);
-	translate([-35/2,  -8, 1]) cylinder(r=4, h=4);
-    
-    
-}
+	translate([0,0,-10])cylinder(r=4.7, h=40);
 
+	// M3 bolt holes
+	translate([35/2,  -8, -10]) cylinder(r=1.5, h=20);
+	translate([35/2,  -8, -2-1.5]) Hexagon(5.37, 4);
+	translate([35/2,  -8, 1]) cylinder(r=4, h=4);
+
+	translate([-35/2, -8, -10]) cylinder(r=1.5, h=20);
+	translate([-35/2,  -8, -2-1.5]) Hexagon(5.37, 4);
+	translate([-35/2,  -8, 1]) cylinder(r=4, h=4);
+}
 
 module stepper_frame() {
     difference() {
@@ -205,14 +208,19 @@ module stepper_frame() {
             translate([16,0,9.9]) flat_pos(2,1);
 
             // Stepper mount front plate
-            translate([0,18,2.2]) cube([48,2,20]);
-            translate([8,18,0]) cube([13,2,2.2]);
-            translate([8+19,18,0]) cube([13,2,2.2]);
-            
+            // 19.2 is like twice the height of a lego piece according to the internet
+            // 19.2 - 2.2 = 17
+            translate([0,18,2.2]) cube([48,2,17]);
+            translate([0,18+2+1.5,9]) cube([8,3,6]);
+            translate([36+4,18+2+1.5,9]) cube([8,3,6]);
+
+            // Extra bottom support
+            translate([8,18,0]) cube([32,2,2.2]);
+
             // Left stepper support
-            translate([2,20,9]) rotate([0,270,0]) linear_extrude(2) polygon([[0,0],[0,12],[13,0]],[[0,1,2]], 4);
+            translate([2,20,9]) rotate([0,270,0]) linear_extrude(2) polygon([[0,0],[0,12],[10,0]],[[0,1,2]], 4);
             // Right stepper support
-            translate([48,20,9]) rotate([0,270,0]) linear_extrude(2) polygon([[0,0],[0,12],[13,0]],[[0,1,2]], 4);
+            translate([48,20,9]) rotate([0,270,0]) linear_extrude(2) polygon([[0,0],[0,12],[10,0]],[[0,1,2]], 4);
             
         }
         // Front holes
@@ -227,7 +235,11 @@ module stepper_frame() {
         // Cut out the stepper holes
         translate([24,20,5.7]) rotate([90,180,0]) stepperholes();
         // Make space for screw holes behind stepper
-        translate([2,20,9.9]) cube([44,4,20]);
+        translate([2,20,9.9]) cube([44,1.5,19]);
+
+        // Cut out a slot to slide in the stepper
+        translate([8*6/2-4.7,18,6]) cube([4.7*2,2,30]);
+
      }
  }
  
